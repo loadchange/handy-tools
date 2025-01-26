@@ -51,104 +51,169 @@ app.on("window-all-closed", function () {
 // Handle printer-related IPC events
 ipcMain.handle("get-printers", async () => {
   try {
-    // Use PowerShell to get printer list on Windows with UTF-8 encoding
-    const { stdout } = await execPromise(
-      'chcp 65001 >nul && powershell.exe -Command "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Printer | Select-Object Name,Type,PortName,DeviceType,Network,Shared | ConvertTo-Json"'
-    );
-    const printers = JSON.parse(stdout);
-
-    // Convert to the format expected by the renderer
-    const formattedPrinters = Array.isArray(printers) ? printers : [printers];
-    const result = formattedPrinters.map((printer) => ({
-      name: printer.Name,
-      description: `${printer.Type} (${printer.PortName})`,
-      isNetwork: printer.Network || printer.Name.startsWith("\\\\"),
-      isDefault: false, // We'll set this later
-    }));
-
-    // Get default printer with UTF-8 encoding
-    const { stdout: defaultPrinter } = await execPromise(
-      'chcp 65001 >nul && powershell.exe -Command "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; (Get-WmiObject -Query \\"Select * from Win32_Printer where Default = true\\").Name"'
-    );
-    const defaultPrinterName = defaultPrinter.trim();
-
-    // Mark default printer
-    result.forEach((printer) => {
-      if (printer.name === defaultPrinterName) {
-        printer.isDefault = true;
-      }
-    });
-
-    console.log("Printers found:", result.length);
-    return result;
+    const printers = await mainWindow.webContents.getPrintersAsync();
+    if (Array.isArray(printers) && printers.length > 0) {
+      return printers.map((printer) => ({
+        ...printer,
+        isNetwork: printer.Network || printer.name.startsWith("\\\\"),
+      }));
+    }
+    return [];
   } catch (error) {
-    console.error("Error getting printers:", error);
+    console.log("64 getPrinters error:", error);
     return [];
   }
 });
 
-async function printWithPowerShell(content, printerName) {
-  const tempFile = path.join(app.getPath("temp"), `print-content-${Date.now()}.txt`);
-  try {
-    // 写入内容到临时文件，使用 UTF-8 with BOM
-    const fs = require("fs");
-    fs.writeFileSync(tempFile, "\ufeff" + content, "utf8");
-
-    // 验证打印机是否存在
-    const validateCommand = `Get-Printer -Name "${printerName.replace(/"/g, '""')}" -ErrorAction SilentlyContinue`;
-    const { stdout: printerExists } = await execPromise(`powershell.exe -Command "${validateCommand}"`);
-    
-    if (!printerExists) {
-      throw new Error(`找不到打印机: ${printerName}`);
-    }
-
-    // 使用Windows原生打印命令
-    const printCommand = `rundll32 msprint.dll,PrintUIEntry /k /n "${printerName.replace(/"/g, '""')}" "${tempFile.replace(/"/g, '""')}"`;
-    await execPromise(printCommand);
-    
-    console.log("Print command executed successfully");
-    return true;
-  } catch (error) {
-    console.error("Print error:", error);
-    throw new Error(`打印失败: ${error.message}`);
-  } finally {
-    // 清理临时文件
+async function printContent(content, printerName) {
+  return new Promise((resolve, reject) => {
     try {
-      fs.unlinkSync(tempFile);
-    } catch (e) {
-      console.error("Error cleaning up temp file:", e);
+      // 创建打印窗口
+      const printWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        show: process.env.NODE_ENV === "development",
+        webPreferences: {
+          nodeIntegration: false,
+          contextIsolation: true,
+        },
+      });
+
+      // 生成打印内容的HTML
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>打印内容</title>
+            <style>
+              body {
+                font-family: SimSun, "宋体", Arial, sans-serif;
+                margin: 20px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              }
+              @media print {
+                body {
+                  margin: 0;
+                }
+              }
+            </style>
+          </head>
+          <body>${content}</body>
+        </html>
+      `;
+
+      // 创建临时文件
+      const tempFile = path.join(app.getPath("temp"), `print-${Date.now()}.html`);
+      require("fs").writeFileSync(tempFile, printContent, "utf8");
+      const fileUrl = `file://${tempFile.replace(/\\/g, "/")}`;
+
+      console.log("正在加载打印内容:", fileUrl);
+      printWindow.loadURL(fileUrl);
+
+      // 等待内容加载完成后打印
+      printWindow.webContents.on("did-finish-load", async () => {
+        try {
+          console.log("load...");
+          console.log("use =>", printerName);
+
+          // 首先尝试获取打印机设置
+          const printers = await printWindow.webContents.getPrintersAsync();
+          console.log(151, { PrintersSize: printers.length });
+          const printerInfo = printers.find((p) => p.name === printerName);
+          console.log("153 print:", printerInfo);
+
+          const options = {
+            silent: true,
+            printBackground: false,
+            deviceName: printerName,
+            // color: true,
+            // margins: {
+            //   marginType: "custom",
+            //   top: 0.4,
+            //   bottom: 0.4,
+            //   left: 0.4,
+            //   right: 0.4,
+            // },
+            // pageSize: "A4",
+          };
+
+          console.log("170 options:", options);
+
+          try {
+            // 尝试打印
+            printWindow.webContents.print(options, function (success, errorType) {
+              console.log(175, { success, errorType });
+
+              if (success) {
+                console.log("178 print success");
+                resolve(true);
+              } else {
+                console.log("181 error...");
+                resolve(false);
+              }
+            });
+          } catch (printError) {
+            console.error("186 printError:", printError);
+            throw printError;
+          }
+        } catch (error) {
+          console.error("191 error:", error);
+          reject(error);
+        } finally {
+          // 清理资源
+          try {
+            // require("fs").unlinkSync(tempFile);
+            // console.log("clear temp file");
+          } catch (e) {
+            // console.error("clear error:", e);
+          }
+          // printWindow.close();
+        }
+      });
+
+      // 处理加载错误
+      printWindow.webContents.on("did-fail-load", (error) => {
+        console.error("206 did-fail-load:", error);
+        printWindow.close();
+        reject(new Error(`208 did-fail-load: ${error}`));
+      });
+    } catch (error) {
+      console.error("211 init error:", error);
+      reject(new Error(`212 error: ${error.message}`));
     }
-  }
+  });
 }
 
 ipcMain.handle("print-content", async (event, { content, printerName }) => {
   try {
-    console.log("Print request received for printer:", printerName);
+    console.log("PrinterName:", printerName);
 
-    // For network printers, first verify connection
-    if (printerName.startsWith("\\\\")) {
-      try {
-        const computerName = printerName.split("\\")[2];
-        console.debug("\n[DEBUG] Testing connection to network printer host:", computerName, "\n\n");
-        const { stdout } = await execPromise(
-          `chcp 65001 >nul && powershell.exe -Command "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $result = Test-Connection -ComputerName '${computerName}' -Count 1 -Quiet; if ($result) { Write-Output 'True' } else { throw '无法连接到网络打印机，请检查打印机是否在线' }"`
-        );
-        console.debug("\n[DEBUG] Network printer connection result:", stdout.trim(), "\n\n");
-        if (stdout.trim() !== "True") {
-          throw new Error("无法连接到网络打印机，请检查打印机是否在线");
-        }
-      } catch (error) {
-        console.error("Network printer connection error:", error);
-        throw new Error("无法连接到网络打印机，请检查打印机是否在线");
-      }
+    // 确保主窗口已经准备好
+    if (!mainWindow || !mainWindow.webContents || !mainWindow.webContents.getPrintersAsync) {
+      throw new Error("主窗口未准备好，请稍后重试");
     }
 
-    // Use PowerShell for printing
-    const result = await printWithPowerShell(content, printerName);
-    console.log("Print result:", result);
-    return { success: result };
+    // 获取所有打印机列表
+    const printers = await mainWindow.webContents.getPrintersAsync();
+    console.log({ printers });
+    console.log("229 :", printers.map((p) => p.name).join(", "));
+
+    // 检查打印机是否存在
+    const printerExists = printers.some((p) => p.name === printerName);
+    console.log({ printerExists, printerName });
+    if (!printerExists) {
+      throw new Error(`235: ${printerName}`);
+    }
+
+    // 执行打印
+    console.log("239 start...");
+    const result = await printContent(content, printerName);
+    console.log("241 ", { result });
+    return { success: true };
   } catch (error) {
-    console.error("Error printing:", error);
+    console.error("244 err:", error);
     return { success: false, error: error.message };
   }
 });

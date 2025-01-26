@@ -1,7 +1,7 @@
 {
   "name": "electron-print-mesh",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "An Electron-based printer management application for demonstrating printer control capabilities",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -9,13 +9,13 @@
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "printer",
+    "print",
+    "demo",
+    "management"
   ],
   "author": "GitHub",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^34.0.1"
   },
