@@ -1,18 +1,25 @@
-/**
- * The preload script runs before `index.html` is loaded
- * in the renderer. It has access to web APIs as well as
- * Electron's renderer process modules and some polyfilled
- * Node.js functions.
- *
- * https://www.electronjs.org/docs/latest/tutorial/sandbox
- */
-window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  }
+const { contextBridge, ipcRenderer } = require('electron')
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type])
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld(
+  'electronAPI',
+  {
+    getPrinters: async () => {
+      try {
+        return await ipcRenderer.invoke('get-printers');
+      } catch (error) {
+        console.error('Error getting printers:', error);
+        return [];
+      }
+    },
+    printContent: async (content, printerName) => {
+      try {
+        return await ipcRenderer.invoke('print-content', { content, printerName });
+      } catch (error) {
+        console.error('Error printing:', error);
+        return { success: false, error: error.message };
+      }
+    }
   }
-})
+)

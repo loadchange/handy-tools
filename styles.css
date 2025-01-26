@@ -1,3 +1,98 @@
 /* styles.css */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
 
-/* Add styles here to customize the appearance of your app */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.printer-section, .print-section {
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.printer-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.printer-status {
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.printer-status.error {
+  background-color: #ffe6e6;
+  color: #d63031;
+  border: 1px solid #fab1a0;
+}
+
+.printer-status.success {
+  background-color: #e6ffe6;
+  color: #27ae60;
+  border: 1px solid #a8e6cf;
+}
+
+.printer-status.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.print-content {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  resize: vertical;
+}
+
+.print-button {
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.print-button:hover {
+  background-color: #3498db;
+}
+
+.print-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.version-info {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 12px;
+}
