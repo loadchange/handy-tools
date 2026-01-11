@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui';
 import { Input } from '@/components/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
-import { Search, Wrench, Terminal, Cpu, Zap, Globe, Shield, Activity } from 'lucide-react';
+import { Search, Wrench, Terminal, Cpu, Zap, Globe, Shield, Activity, Github } from 'lucide-react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
@@ -55,9 +55,16 @@ export default function Home() {
             </div>
             <h2 className="text-2xl font-bold tracking-tighter uppercase">HandyTools</h2>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full hover:bg-primary/20">
-            {mounted ? (theme === 'light' ? '🌙' : '☀️') : <span className="w-5 h-5 block opacity-0" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/20" asChild>
+              <a href="https://github.com/loadchange/handy-tools" target="_blank" rel="noopener noreferrer">
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full hover:bg-primary/20">
+              {mounted ? (theme === 'light' ? '🌙' : '☀️') : <span className="w-5 h-5 block opacity-0" />}
+            </Button>
+          </div>
         </header>
 
         <section className="text-center mb-24 animate-fade-in">
@@ -151,9 +158,17 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="text-center mt-20 py-10 border-t border-white/10 text-sm text-muted-foreground">
+        <footer className="text-center mt-20 py-10 border-t border-white/10 text-sm text-muted-foreground space-y-2">
           <p>
             © 2024 HandyTools. <span className="text-primary">Open Source Intelligence.</span>
+          </p>
+          <p>
+            <a href="https://github.com/loadchange/handy-tools" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-primary transition-colors">
+              <Github className="h-4 w-4" />
+              View on GitHub
+            </a>
+            <span className="mx-2">·</span>
+            <span>MIT License</span>
           </p>
         </footer>
       </div>
