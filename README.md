@@ -1,40 +1,72 @@
-# electron-print-mesh
+# 084817
 
-一个基于Electron开发的打印机调用演示应用，用于展示如何在Electron应用中实现打印机控制功能。
+A comprehensive collection of developer tools built for the modern web. No accounts, no tracking, no nonsense - just tools that work.
 
-## 功能特点
-- 自动获取系统中已连接的打印机列表
-- 支持本地打印机和网络打印机
-- 实时打印机状态检测
-- 提供打印预览功能
-- 完整的错误处理机制
+## What's Inside
 
-## 运行效果
-### 应用界面
-![应用运行截图](images/screenshot.png)
+**70+ tools** across 10 categories:
 
-### 打印效果
-![打印效果](images/printer.jpg)
+- **Crypto** - Hash generators, encryption, UUID/ULID, password analysis, RSA key pairs
+- **Converters** - JSON/YAML/TOML/XML, Base64, color formats, number bases, date/time
+- **Web** - JWT parser, URL encoder, QR codes, HTTP status codes, meta tag generator
+- **Network** - IP/subnet calculators, MAC address utilities, connectivity diagnostics
+- **Development** - JSON diff, SQL formatter, regex tester, crontab generator, Docker compose converter
+- **Text** - Diff viewer, statistics, Lorem ipsum, ASCII art, string obfuscation
+- **Data** - Phone number parser, IBAN validator
+- **Math** - ETA calculator, percentage calculator
+- **Measurement** - Temperature converter, benchmark builder
+- **Media** - SVG placeholder generator, camera recorder
 
-## 安装使用
-### 环境要求
-- Node.js
-- pnpm
+## Tech Stack
 
-### 安装步骤
+- Next.js 15 with App Router
+- React 19
+- TypeScript
+- Tailwind CSS
+- shadcn/ui (Radix UI primitives)
+- Zustand for state management
+
+## Getting Started
+
 ```bash
-# 安装依赖
-pnpm install
+# Install dependencies
+npm install
 
-# 启动应用
-pnpm start
+# Run development server (port 8849)
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-## 技术实现
-- 使用Electron的原生打印API
-- IPC通信实现主进程和渲染进程的打印控制
-- 支持多种打印机类型的连接检测
-- 完整的错误处理和状态反馈机制
+## Project Structure
 
-## 许可证
-本项目采用 [MIT](LICENSE.md) 开源许可证。
+```
+src/
+  app/
+    tools/[category]/[tool]/   # Tool pages
+    layout.tsx                 # Root layout
+    providers.tsx              # Theme + providers
+  components/
+    ui/                        # shadcn/ui components
+  lib/
+    tools-list.ts              # Tool registry
+    utils.ts                   # Shared utilities
+  stores/                      # Zustand stores
+  utils/                       # Tool-specific logic
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add your tool following the existing patterns
+4. Register it in `src/lib/tools-list.ts`
+5. Submit a pull request
+
+## License
+
+MIT
