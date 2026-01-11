@@ -117,7 +117,7 @@ export default function Home() {
 
                 return (
                   <Link key={category.name} href={`/tools/${getUrl(category.name)}`} className="block h-full">
-                    <Card className="h-full bg-card/40 backdrop-blur-sm border-white/5 hover:bg-card/60 group animate-scale-in" style={{ animationDelay: `${index * 50}ms` }}>
+                    <Card className="h-full bg-card/40 backdrop-blur-sm border-border/50 hover:border-border hover:bg-card/60 group animate-scale-in transition-colors" style={{ animationDelay: `${index * 50}ms` }}>
                       <CardHeader className="text-center pb-4 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                             <Cpu className="w-16 h-16" />
