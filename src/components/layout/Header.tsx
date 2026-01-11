@@ -31,9 +31,9 @@ export default function Header({ onToggleSidebar }: { onToggleSidebar: () => voi
 
         <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight">
           <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-             <span className="text-primary">08</span>
+             <span className="text-primary">HT</span>
           </div>
-          <span className="hidden sm:inline-block">084817</span>
+          <span className="hidden sm:inline-block">HandyTools</span>
         </Link>
 
         {/* Search */}
@@ -62,7 +62,7 @@ export default function Header({ onToggleSidebar }: { onToggleSidebar: () => voi
 
         <Button variant="ghost" size="icon" asChild>
           <a
-            href="https://github.com/loadchange/xyz-084817"
+            href="https://github.com/loadchange/handy-tools"
             target="_blank"
             rel="noopener noreferrer"
           >

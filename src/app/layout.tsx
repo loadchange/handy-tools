@@ -9,10 +9,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "084817 - Developer Powerhouse",
+  title: "HandyTools - Developer Powerhouse",
   description: "A futuristic collection of high-performance tools designed for the modern developer. Encrypt, convert, and optimize with precision.",
-  keywords: ["productivity", "converter", "website", "react", "tools", "frontend", "developer-tools", "crypto", "formatter"],
-  authors: [{ name: "084817 Team" }],
+  keywords: ["productivity", "converter", "website", "react", "tools", "frontend", "developer-tools", "crypto", "formatter", "handy-tools"],
+  authors: [{ name: "HandyTools Team" }],
   manifest: "/manifest.json",
   other: {
     "google-adsense-account": "ca-pub-0253215019029303",

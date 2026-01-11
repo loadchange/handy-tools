@@ -58,7 +58,7 @@ export const useToolStore = create<ToolStore>()(
       clearSearchHistory: () => set({ searchHistory: [] }),
     }),
     {
-      name: 'it-tools-store',
+      name: 'handy-tools-store',
       partialize: (state) => ({ favoriteTools: state.favoriteTools, searchHistory: state.searchHistory }),
     }
   )

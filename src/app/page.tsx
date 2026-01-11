@@ -53,7 +53,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-primary/50 blur-md rounded-full group-hover:bg-primary/80 transition-all duration-300" />
               <Wrench className="h-8 w-8 text-primary relative z-10" />
             </div>
-            <h2 className="text-2xl font-bold tracking-tighter uppercase">084817</h2>
+            <h2 className="text-2xl font-bold tracking-tighter uppercase">HandyTools</h2>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full hover:bg-primary/20">
             {mounted ? (theme === 'light' ? '🌙' : '☀️') : <span className="w-5 h-5 block opacity-0" />}
@@ -153,7 +153,7 @@ export default function Home() {
 
         <footer className="text-center mt-20 py-10 border-t border-white/10 text-sm text-muted-foreground">
           <p>
-            © 2024 084817. <span className="text-primary">Open Source Intelligence.</span>
+            © 2024 HandyTools. <span className="text-primary">Open Source Intelligence.</span>
           </p>
         </footer>
       </div>

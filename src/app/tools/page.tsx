@@ -24,7 +24,7 @@ function ToolsContent() {
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold tracking-tight">System Modules</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Access the complete library of 084817 utilities. Secure. Efficient. Ready.
+          Access the complete library of HandyTools utilities. Secure. Efficient. Ready.
         </p>
       </div>
 
